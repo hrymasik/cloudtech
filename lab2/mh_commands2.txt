@@ -1,0 +1,27 @@
+Laboratory 2
+
+aws ec2 create-vpc --cidr-block 20.20.0.0/16
+
+aws ec2 create-subnet --vpc-id VpcId --cidr-block 20.20.1.0/24
+
+aws ec2 create-subnet --vpc-id VpcId --cidr-block 20.20.0.0/24
+
+aws ec2 create-internet-gateway
+
+aws ec2 attach-internet-gateway --vpc-id VpcId --internet-gateway-id InternetGatewayId
+
+aws ec2 create-route-table --vpc-id VpcId
+
+aws ec2 create-route --route-table-id RouteTableId --destination-cidr-block 0.0.0.0/0 --gateway-id InternetGatewayId
+
+aws ec2 associate-route-table --subnet-id SubnetId --route-table-id RouteTableId
+
+aws ec2 modify-subnet-attribute --subnet-id SubnetId --map-public-ip-on-launch
+
+aws ec2 create-key-pair --key-name KEYPAIR --query 'KeyMaterial' --output text > KEYPAIR.pem
+
+aws ec2 create-security-group --group-name MH --description "Cloud the Best" --vpc-id VpcId
+
+aws ec2 authorize-security-group-ingress --group-id GroupId --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+aws ec2 run-instances --image-id AMI --count 1 --instance-type t2.micro --key-name KEYPAIR --security-group-ids GroupId --subnet-id SubnetI
