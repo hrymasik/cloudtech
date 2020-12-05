@@ -1,0 +1,32 @@
+Laboratory 3
+
+"VpcId"		:	"vpc-0a5422f57ee2287c4"
+"GroupId"	:	"sg-0680e96373949288f"
+"SubnetId"	:	"subnet-0af0288e43206e5aa"
+"InstanceId"	: 	"i-0af758b77ffe75b95"
+"ImageId"	: 	"ami-08096263443bb4ad2"
+
+aws ec2 create-default-vpc
+
+aws ec2 create-security-group --description 'Passing Laboratory 3 2nd time' --group-name 'Lab3'
+
+aws ec2 create-security-group --vpc-id vpc-0a5422f57ee2287c4 --group-name 'Lab3' --description 'for lab 3'
+
+aws ec2 authorize-security-group-ingress --group-id sg-0680e96373949288f --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+aws ec2 authorize-security-group-ingress --group-id sg-0680e96373949288f --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+aws ec2 authorize-security-group-ingress --group-id sg-0680e96373949288f --protocol tcp --port 443 --cidr 0.0.0.0/0
+
+aws ec2 create-key-pair --key-name KeyPair3 --query 'KeyMaterialForLab3' --output text > KeyPair3.pem
+
+aws ec2 modify-subnet-attribute --subnet-id subnet-0af0288e43206e5aa --map-public-ip-on-launch
+
+aws ec2 run-instances --image-id ami-0947d2ba12ee1ff75 --count 1 --instance-type t2.micro --key-name KeyPair3 --security-group-ids sg-0680e96373949288f --subnet-id subnet-0af0288e43206e5aa --user-data file://UserData.txt
+
+aws ec2 create-tags --resources i-0af758b77ffe75b95 --tags Key=Role,Value=WebServer
+
+aws ec2 create-image --instance-id i-0af758b77ffe75b95 --name "Lab3Practise2" --description "Image (Apache Web Server)"
+
+
+
