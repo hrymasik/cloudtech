@@ -1,0 +1,20 @@
+Laboratory 4
+
+aws elbv2 create-load-balancer --name Lab4MH --type application --scheme internet-facing --subnets subnet-0e4fd39514f4f5976 subnet-0bfa7b737c7c2da69
+
+aws ec2 create-security-group --group-name "Lab4" --description "Passing Laboratory 4"
+
+aws ec2 authorize-security-group-ingress --group-id sg-0f4773c14ed45f229 --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+aws elbv2 set-security-groups --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:029232283860:loadbalancer/app/Lab4MH/c472b7a9c433dad7 --security-groups sg-0f4773c14ed45f229
+
+aws ec2 run-instances --image-id ami-08096263443bb4ad2 --count 1 --instance-type t2.micro --key-name KeyPair3 --associate-public-ip-address --security-group-ids sg-0f4773c14ed45f229 --user-data file://UserData1.txt
+
+aws ec2 run-instances --image-id ami-08096263443bb4ad2 --count 1 --instance-type t2.micro --key-name KeyPair3 --associate-public-ip-address --security-group-ids sg-0f4773c14ed45f229 --user-data file://UserData2.txt
+
+aws elbv2 create-target-group --name Lab4MHTargetGroup --target-type instance --protocol HTTP --port 80 --vpc-id vpc-06f2f00caf57b3a38
+
+aws elbv2 register-targets --target-group-arn arn:aws:elasticloadbalancing:us-east-1:029232283860:targetgroup/Lab4MHTargetGroup/a3e626532a82cb0c --targets Id=i-0b3ff02f6a6860707 Id=i-077c477198d94c335
+
+aws elbv2 create-listener --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:029232283860:loadbalancer/app/Lab4MH/c472b7a9c433dad7 --protocol HTTP --port 80 --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:029232283860:targetgroup/Lab4MHTargetGroup/a3e626532a82cb0c
+
